@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для Сашеньки 💘</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #ff9ecb, #ff6fa5);
+    overflow: hidden;
+    text-align: center;
+    color: white;
+}
+.page {
+    display: none;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+.active {
+    display: block;
+}
+h1 {
+    margin-top: 35vh;
+    font-size: 34px;
+    animation: fadeIn 2s ease;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 18px;
+    animation: fadeIn 3s ease;
+}
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: #ff4f8b;
+    font-size: 16px;
+}
+.falling, .heart {
+    position: absolute;
+    top: -50px;
+    font-size: 16px;
+    animation: fall linear infinite;
+}
+
+.heart {
+    font-size: 20px;
+}
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.8);}
+    to {opacity: 1; transform: scale(1);}
+}
+</style>
+</head>
+<body>
+<audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+<div class="page active" id="page1">
+    <h1>Сашенька 💘</h1>
+    <p>для любимой Сашеньки, нажми далее :)</p>
+    <button onclick="start()">Далее</button>
+</div>
+<div class="page" id="page2">
+    <h1>Кто моя умничка?</h1>
+    <button onclick="yesClick()">Я</button>
+    <button id="noBtn">Не знаю</button>
+</div>
+<div class="page" id="page3">
+    <h1>Умничка! 💖</h1>
+    <p>Я тебя очень люблю 💘</p>
+
+    <button onclick="loveBack()">я тебя тоже</button>
+    <button id="noLoveBtn">я тебя нет</button>
+</div>
+
+<script>
+const compliments = [
+"ты красивая","ты прекрасная","ты лучшая",
+"ты милая","ты солнышко","ты чудо"
+];
+
+const smartTexts = [
+"ты моя умница","самая лучшая","моя радость","моя любовь"
+];
+function createTextRain(texts) {
+    setInterval(() => {
+        const el = document.createElement("div");
+        el.className = "falling";
+        el.innerText = texts[Math.floor(Math.random()*texts.length)];
+        el.style.left = Math.random()*100 + "vw";
+        el.style.animationDuration = (3 + Math.random()*4) + "s";
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(),7000);
+    }, 500);
+}
+function createHearts() {
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "💖";
+        heart.style.left = Math.random()*100 + "vw";
+        heart.style.animationDuration = (4 + Math.random()*4) + "s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),8000);
+    }, 300);
+}
+function start() {
+    nextPage(2);
+    document.getElementById("music").play();
+    createTextRain(compliments);
+    createHearts();
+}
+function nextPage(p) {
+    document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+    document.getElementById("page"+p).classList.add("active");
+
+    if(p===2){
+        createTextRain(smartTexts);
+    }
+}
+const noBtn = document.getElementById("noBtn");
+noBtn.addEventListener("mouseover", () => {
+    noBtn.style.position = "absolute";
+    noBtn.style.left = Math.random()*80 + "%";
+    noBtn.style.top = Math.random()*80 + "%";
+});
+
+function yesClick(){
+    navigator.vibrate(100);
+    nextPage(3);
+    confetti();
+}
+
+function confetti(){
+    for(let i=0;i<50;i++){
+        const c = document.createElement("div");
+        c.className = "heart";
+        c.innerText = "💖";
+        c.style.left = Math.random()*100+"vw";
+        c.style.top = Math.random()*100+"vh";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),2000);
+    }
+}
+function loveBack(){
+    alert("Я знал 😏💘");
+}
+const noLoveBtn = document.getElementById("noLoveBtn");
+
+let x = 100, y = 100;
+let dx = 10, dy = 10;
+
+noLoveBtn.addEventListener("click", () => {
+    noLoveBtn.style.position = "absolute";
+
+    setInterval(() => {
+        const w = window.innerWidth - noLoveBtn.offsetWidth;
+        const h = window.innerHeight - noLoveBtn.offsetHeight;
+
+        x += dx;
+        y += dy;
+
+        if (x <= 0 || x >= w) dx *= -1;
+        if (y <= 0 || y >= h) dy *= -1;
+
+        noLoveBtn.style.left = x + "px";
+        noLoveBtn.style.top = y + "px";
+    }, 16);
+});
+</script>
+
+</body>
+</html>
